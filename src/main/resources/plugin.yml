@@ -4,7 +4,7 @@ main: com.example.skywarsplugin.SkyWars
 description: I am gay
 author: UwU
 website: https://pornhub.com
-api-version: '1.19.2'
+api-version: '1.19'
 commands:
   skywars:
     aliases: [sw]

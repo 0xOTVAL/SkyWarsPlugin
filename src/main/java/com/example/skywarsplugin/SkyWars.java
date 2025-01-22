@@ -19,8 +19,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class SkyWars extends JavaPlugin implements Listener {
-    public List<ArenaData> arenas_list;
+    public List<ArenaData> arenas_list=new ArrayList<>();
     public ArenaManager arenaManager;
+    MainCommand mainCommand=new MainCommand(this);
     public void onEnable(){
         getDataFolder().mkdir();
         try {
@@ -34,7 +35,9 @@ public class SkyWars extends JavaPlugin implements Listener {
         String respawnloc= getConfig().get("respawn_location").toString();
         //load arenas from file
         File arenas = new File(getDataFolder(), "arena_list.json");
+
         try {
+            if(!arenas.exists())arenas.createNewFile();
             String jsonstring = FileUtils.readFileToString(arenas, Charset.defaultCharset());
             Gson g = new Gson();
             arenas_list = new ArrayList<>(Arrays.asList(g.fromJson(jsonstring, ArenaData[].class)));
@@ -44,8 +47,8 @@ public class SkyWars extends JavaPlugin implements Listener {
         arenaManager=new ArenaManager(arenas_list,new Location(Bukkit.getWorld(respawnloc.split(",")[0]),Float.parseFloat(respawnloc.split(",")[1]),Float.parseFloat(respawnloc.split(",")[2]),Float.parseFloat(respawnloc.split(",")[3])));
 
         //register command`
-        MainCommand mainCommand=new MainCommand(this);
-        Objects.requireNonNull(this.getCommand("sumo")).setExecutor(mainCommand.base);
+
+        Objects.requireNonNull(this.getCommand("skywars")).setExecutor(mainCommand.base);
         Bukkit.getPluginManager().registerEvents(new attackListener(this), this);
         Bukkit.getPluginManager().registerEvents(new interactListener(this),this);
         Bukkit.getPluginManager().registerEvents(new moveListener(this),this);

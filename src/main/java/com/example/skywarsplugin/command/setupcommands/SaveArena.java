@@ -3,6 +3,7 @@ package com.example.skywarsplugin.command.setupcommands;
 import com.example.skywarsplugin.SkyWars;
 import com.example.skywarsplugin.SkyWars;
 import com.example.skywarsplugin.arena.ArenaData;
+import com.example.skywarsplugin.arena.ArenaManager;
 import com.example.skywarsplugin.command.SubCommand;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
@@ -31,6 +32,7 @@ public class SaveArena extends SubCommand {
             String out= g.toJson(plugin.arenaManager.arenaDataList);
             File arenas = new File(plugin.getDataFolder(), "arena_list.json");
             FileUtils.writeStringToFile(arenas,out, Charset.defaultCharset());
+            plugin.arenaManager.updateArenasData();
         } catch (Exception e) {
             e.printStackTrace();
         }
