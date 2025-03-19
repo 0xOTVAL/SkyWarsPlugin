@@ -20,6 +20,7 @@ public class JoinArena extends SubCommand {
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         Player player= Objects.requireNonNull(Bukkit.getPlayer(sender.getName()));
         Arena arena=plugin.arenaManager.getArenaByName(subCommandArgs[0]);
+        sender.sendMessage(Bukkit.getWorld(  plugin.arenas_list.getFirst().world).getName());
         if(arena==null){
             sender.sendMessage("Arena "+subCommandArgs[0]+" does not exist");
             return;

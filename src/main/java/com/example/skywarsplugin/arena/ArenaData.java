@@ -13,7 +13,7 @@ public class ArenaData {
     public String lobbypos="";
     public ArrayList<TeamData> teams= new ArrayList<>();
 
-    public ArenaData(String name, String world,String[] islandpos, String lobbypos, TeamData[] teams,int gameTime){
+    public ArenaData(String name, String world,String[] islandpos, String lobbypos, TeamData[] teams){
         this.name=name;
         this.world=world;
         this.islandpos=Arrays.stream(islandpos).collect(Collectors.toCollection(ArrayList::new));

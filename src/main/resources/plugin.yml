@@ -3,6 +3,7 @@ version: 1.0.0
 main: com.example.skywarsplugin.SkyWars
 description: I am gay
 author: UwU
+softdepends: [Multiverse-Core]
 website: https://pornhub.com
 api-version: '1.19'
 commands:

@@ -15,7 +15,10 @@ public class ArenaManager {
         this.arenaDataList = arenaDataList;
         this.respawn_loc=respawn_loc;
         for(ArenaData d: arenaDataList){
-            arenas.add(new Arena(d));
+            Arena a=new Arena(d);
+            a.respawn_loc=respawn_loc;
+            arenas.add(a);
+
         }
     }
     public Arena getArenaByName(String name){

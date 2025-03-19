@@ -21,7 +21,7 @@ import java.util.Objects;
 public class SkyWars extends JavaPlugin implements Listener {
     public List<ArenaData> arenas_list=new ArrayList<>();
     public ArenaManager arenaManager;
-    MainCommand mainCommand=new MainCommand(this);
+
     public void onEnable(){
         getDataFolder().mkdir();
         try {
@@ -47,7 +47,7 @@ public class SkyWars extends JavaPlugin implements Listener {
         arenaManager=new ArenaManager(arenas_list,new Location(Bukkit.getWorld(respawnloc.split(",")[0]),Float.parseFloat(respawnloc.split(",")[1]),Float.parseFloat(respawnloc.split(",")[2]),Float.parseFloat(respawnloc.split(",")[3])));
 
         //register command`
-
+        MainCommand mainCommand=new MainCommand(this);
         Objects.requireNonNull(this.getCommand("skywars")).setExecutor(mainCommand.base);
         Bukkit.getPluginManager().registerEvents(new attackListener(this), this);
         Bukkit.getPluginManager().registerEvents(new interactListener(this),this);
