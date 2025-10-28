@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.util.Vector;
 
 
 public class moveListener implements Listener{
@@ -23,7 +24,10 @@ public class moveListener implements Listener{
         //get arena
         Arena arena = arenaManager.getArenaByPlayer(event.getPlayer());
         if (arena == null) return;
-        if(!arena.isGameStarted &&event.getTo().y()<50)event.getPlayer().teleport(new Location(arena.worldcopy,arena.lobbypos.x(),arena.lobbypos.y(),arena.lobbypos.z()));
+        if(!arena.isGameStarted &&event.getTo().y()<50){
+            event.getPlayer().teleport(new Location(arena.worldcopy,arena.lobbypos.x(),arena.lobbypos.y(),arena.lobbypos.z()));
+            event.getPlayer().setVelocity(new Vector(0,0,0));
+        }
         if(arena.isGameStarted && event.getTo().y()<50)arena.killPlayer(event.getPlayer());
     /*    if (event.getTo().getBlock().getType()== Material.AIR) {
             //if player is outside barrier and game has not started teleport in to lobby

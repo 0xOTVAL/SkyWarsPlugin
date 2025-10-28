@@ -39,6 +39,8 @@ public class Arena {
     public ArrayList<Player> spectators=new ArrayList<>();
     public HashMap<Player, ItemStack[]> playerInventory=new HashMap<>();
 
+    //Термоядерный костыль для нормальной перезагрузки мира
+    int worldcopyindex=0;
 
     public Arena(@NotNull ArenaData data){
         name = data.name;
@@ -55,6 +57,8 @@ public class Arena {
             teams.add(new Team(td));
         }
         hasTeams=!teams.isEmpty();
+        //Чистим директории прошлых арен чтобы не возникало ошибок
+        clearOldWorldsDirectorys();
     }
     public Team getTeamByPlayer(Player player){
         for(Team t: teams){
@@ -124,6 +128,7 @@ public class Arena {
         }
         for(Player p: players) {
             p.setSaturation(5);
+            p.setHealth(p.getMaxHealth());
             //Cleat players inventory
             p.getInventory().clear();
             //teleport player to its spawn
@@ -156,13 +161,17 @@ public class Arena {
         if(worldcopy!=null){
             File oldworld=worldcopy.getWorldFolder();
             unloadWorld(worldcopy);
-
-            Bukkit.getServer().getConsoleSender().sendMessage(deleteDirectory(oldworld) ? "Success" : "Fail" );
-            copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp");
         }
-        else copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp");
-        worldcopy=Bukkit.getWorld(worldname+"_swtmp");
+        worldcopyindex++;
+        copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp_"+worldcopyindex);
+        worldcopy=Bukkit.getWorld(worldname+"_swtmp_"+worldcopyindex);
         worldcopy.setTime(1000);
+        worldcopy.setStorm(false);
+        worldcopy.setThundering(false);
+        worldcopy.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);
+        worldcopy.setGameRule(GameRule.DO_MOB_SPAWNING,false);
+        worldcopy.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
+        worldcopy.setGameRule(GameRule.MOB_GRIEFING,false);
     }
     public void returnPlayer(Player player){
         if(!players.contains(player))return;
@@ -183,12 +192,17 @@ public class Arena {
             File oldworld=worldcopy.getWorldFolder();
             unloadWorld(worldcopy);
             deleteDirectory(oldworld);
-            copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp");
         }
-        else copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp");
-        worldcopy=Bukkit.getWorld(worldname+"_swtmp");
+        copyWorld(Bukkit.getWorld(worldname),worldname+"_swtmp_"+worldcopyindex);
+        worldcopy=Bukkit.getWorld(worldname+"_swtmp_"+worldcopyindex);
         isStarted=true;
         worldcopy.setTime(1000);
+        worldcopy.setStorm(false);
+        worldcopy.setThundering(false);
+        worldcopy.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);
+        worldcopy.setGameRule(GameRule.DO_MOB_SPAWNING,false);
+        worldcopy.setGameRule(GameRule.DO_WEATHER_CYCLE,false);
+        worldcopy.setGameRule(GameRule.MOB_GRIEFING,false);
         return "Arena "+name+" has started";
     }
     public String stop(){
@@ -274,6 +288,17 @@ public class Arena {
         }
         return directoryToBeDeleted.delete();
     }
-
+    private void clearOldWorldsDirectorys(){
+        File dir = Bukkit.getWorldContainer();
+        File [] files = dir.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.startsWith(worldname+"_swtmp");
+            }
+        });
+        for(File f:files){
+            deleteDirectory(f);
+        }
+    }
 
 }
