@@ -4,6 +4,7 @@ import com.example.skywarsplugin.arena.ArenaData;
 import com.example.skywarsplugin.arena.ArenaManager;
 import com.example.skywarsplugin.command.MainCommand;
 import com.example.skywarsplugin.eventlisteners.*;
+import com.example.skywarsplugin.team.TeamManager;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
@@ -21,7 +22,8 @@ import java.util.Objects;
 public class SkyWars extends JavaPlugin implements Listener {
     public List<ArenaData> arenas_list=new ArrayList<>();
     public ArenaManager arenaManager;
-
+    public Location respawnloc;
+    public TeamManager teamManager;
     public void onEnable(){
         getDataFolder().mkdir();
         try {
@@ -32,7 +34,8 @@ public class SkyWars extends JavaPlugin implements Listener {
         }catch (Exception e){
             e.printStackTrace();
         }
-        String respawnloc= getConfig().get("respawn_location").toString();
+        String respawn_loc= getConfig().get("respawn_location").toString();
+        respawnloc=new Location(Bukkit.getWorld(respawn_loc.split(",")[0]),Float.parseFloat(respawn_loc.split(",")[1]),Float.parseFloat(respawn_loc.split(",")[2]),Float.parseFloat(respawn_loc.split(",")[3]));
         //load arenas from file
         File arenas = new File(getDataFolder(), "arena_list.json");
 
@@ -44,8 +47,8 @@ public class SkyWars extends JavaPlugin implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        arenaManager=new ArenaManager(arenas_list,new Location(Bukkit.getWorld(respawnloc.split(",")[0]),Float.parseFloat(respawnloc.split(",")[1]),Float.parseFloat(respawnloc.split(",")[2]),Float.parseFloat(respawnloc.split(",")[3])));
-
+        arenaManager=new ArenaManager(this);
+        teamManager=new TeamManager(this);
         //register command`
         MainCommand mainCommand=new MainCommand(this);
         Objects.requireNonNull(this.getCommand("skywars")).setExecutor(mainCommand.base);
@@ -58,5 +61,6 @@ public class SkyWars extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new logoutListener(this),this);
         Bukkit.getPluginManager().registerEvents(new blockBreakListener(this),this);
         Bukkit.getPluginManager().registerEvents(new dropItemListener(this),this);
+        Bukkit.getPluginManager().registerEvents(new inventoryClickListener(this),this);
     }
 }

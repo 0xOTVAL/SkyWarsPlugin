@@ -23,7 +23,7 @@ public class attackListener implements Listener {
         if(arena==null)return;
         if(!arena.isGameStarted)return;
         Player attackedPlayer=(Player)event.getAttacked();
-        if(arena.hasTeams && arena.getTeamByPlayer(attackedPlayer)==arena.getTeamByPlayer(event.getPlayer())){
+        if(arena.hasTeams && plugin.teamManager.getTeamByPlayer(attackedPlayer)==plugin.teamManager.getTeamByPlayer(event.getPlayer())){
             event.setCancelled(true);
             return;
         }

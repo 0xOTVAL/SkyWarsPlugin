@@ -8,25 +8,23 @@ import java.util.stream.Collectors;
 
 public class ArenaData {
     public String name="";
+    public String pos1="";
+    public String pos2="";
     public String world="";
     public ArrayList<String> islandpos=new ArrayList<>();
     public String lobbypos="";
-    public ArrayList<TeamData> teams= new ArrayList<>();
+    public int gameTime=-1;
 
-    public ArenaData(String name, String world,String[] islandpos, String lobbypos, TeamData[] teams){
+    public ArenaData(String name, String world,String[] islandpos, String lobbypos, TeamData[] teams,int gameTime){
         this.name=name;
+        this.pos1=pos1;
+        this.pos2=pos2;
         this.world=world;
         this.islandpos=Arrays.stream(islandpos).collect(Collectors.toCollection(ArrayList::new));
         this.lobbypos=lobbypos;
-        this.teams= Arrays.stream(teams).collect(Collectors.toCollection(ArrayList::new));
+        this.gameTime=gameTime;
     }
     public ArenaData(){
 
-    }
-    public TeamData getTeamDataByName(String name){
-        for(TeamData t: teams){
-            if(t.name.equals(name))return t;
-        }
-        return null;
     }
 }

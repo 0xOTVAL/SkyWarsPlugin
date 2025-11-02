@@ -24,17 +24,19 @@ public class moveListener implements Listener{
         //get arena
         Arena arena = arenaManager.getArenaByPlayer(event.getPlayer());
         if (arena == null) return;
-        if(!arena.isGameStarted &&event.getTo().y()<50){
-            event.getPlayer().teleport(new Location(arena.worldcopy,arena.lobbypos.x(),arena.lobbypos.y(),arena.lobbypos.z()));
-            event.getPlayer().setVelocity(new Vector(0,0,0));
-        }
-        if(arena.isGameStarted && event.getTo().y()<50)arena.killPlayer(event.getPlayer());
-    /*    if (event.getTo().getBlock().getType()== Material.AIR) {
-            //if player is outside barrier and game has not started teleport in to lobby
+
+        if (!arena.isInsideBarrier(event.getTo().toVector().toVector3f())) {
+            //if player is outside barrier and game has not started teleport him in to lobby
             if (!arena.isGameStarted) {
-                Location loc = new Location(arena.world, arena.lobbypos.x, arena.lobbypos.y, arena.lobbypos.z);
+                Location loc = new Location(arena.worldcopy, arena.lobbypos.x, arena.lobbypos.y, arena.lobbypos.z);
                 event.getPlayer().teleport(loc);
+                event.getPlayer().setVelocity(new Vector(0,0,0));
             }
-        }*/
+            //if game started inflict damage to player
+            else{
+                event.getPlayer().damage(Integer.parseInt(plugin.getConfig().get("barrier_damage").toString()));
+                if(event.getTo().y()<arena.barrierPos1.y)arena.killPlayer(event.getPlayer());
+            }
+        }
     }
 }

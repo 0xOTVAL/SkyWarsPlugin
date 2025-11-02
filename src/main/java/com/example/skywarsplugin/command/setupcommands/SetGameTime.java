@@ -1,36 +1,30 @@
 package com.example.skywarsplugin.command.setupcommands;
 
 import com.example.skywarsplugin.SkyWars;
-import com.example.skywarsplugin.SkyWars;
 import com.example.skywarsplugin.arena.ArenaData;
 import com.example.skywarsplugin.command.SubCommand;
-import com.example.skywarsplugin.team.Team;
-import com.example.skywarsplugin.team.TeamData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-public class AddTeam extends SubCommand {
+public class SetGameTime extends SubCommand {
     SkyWars plugin;
-    public AddTeam(SkyWars plugin){
+    public SetGameTime(SkyWars plugin){
         this.plugin=plugin;
     }
     @Override
     public void runCommand(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
-        String name=subCommandArgs[2].split(",")[0];
-        String color=subCommandArgs[2].split(",")[1];
-        for(Team t:plugin.teamManager.teams){
-            if(t.name.equals(name)){
-                sender.sendMessage("Team "+t.name+" already exists");
-                return;
-            }
+        ArenaData arenaData=plugin.arenaManager.getArenaDataByName(subCommandArgs[0]);
+        if(arenaData==null){
+            sender.sendMessage("Arena "+subCommandArgs[0]+" does not exist");
+            return;
         }
-        plugin.teamManager.addTeam(name,color);
+        arenaData.gameTime=Integer.parseInt(subCommandArgs[2]);
+        sender.sendMessage("Set game time "+subCommandArgs[2]+" on arena "+arenaData.name);
     }
-
     @Override
     public boolean canExecute(CommandSender sender, Command baseCommand, String baseCommandLabel, String subCommandLabel, String[] subCommandArgs) {
         if(subCommandArgs.length!=3)return false;
-        return ((sender instanceof Player) && subCommandLabel.equals("arena") && subCommandArgs[1].equals("addteam"));
+        return (subCommandLabel.equals("arena") && subCommandArgs[1].equals("settime"));
     }
+
 }

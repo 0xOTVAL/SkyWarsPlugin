@@ -27,5 +27,9 @@ public class MainCommand {
         base.addSubCommand(new SaveArena(plugin));
         base.addSubCommand(new AddTeam(plugin));
         base.addSubCommand(new SetLobbypos(plugin));
+        base.addSubCommand(new SetPos1(plugin));
+        base.addSubCommand(new SetPos2(plugin));
+        base.addSubCommand(new SetGameTime(plugin));
+        base.addSubCommand(new GiveAdminMenuItem(plugin));
     }
 }

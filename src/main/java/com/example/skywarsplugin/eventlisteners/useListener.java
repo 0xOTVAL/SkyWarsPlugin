@@ -3,7 +3,9 @@ package com.example.skywarsplugin.eventlisteners;
 import com.example.skywarsplugin.SkyWars;
 import com.example.skywarsplugin.arena.Arena;
 import com.example.skywarsplugin.arena.ArenaManager;
+import com.example.skywarsplugin.menu.AdminMenu;
 import com.example.skywarsplugin.team.Team;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,12 +21,20 @@ public class useListener implements Listener {
     }
     @EventHandler
     public void PlayerRightClick(PlayerInteractEvent event){
+        if(event.getItem()==null)return;
         if(event.getAction().isLeftClick())return;
         //get arena and player
         Player player=event.getPlayer();
         Arena arena=arenaManager.getArenaByPlayer(player);
+        String itemName= PlainTextComponentSerializer.plainText().serialize(event.getItem().getItemMeta().itemName());
+        if(event.getItem().getType()== Material.ENDER_EYE && itemName.equals("SkyWars admin menu")){
+            AdminMenu m=new AdminMenu(plugin);
+            event.getPlayer().openInventory(m.menuInventory);
+            event.setCancelled(true);
+            return;
+        }
         //we don't want to do anything if: 1)player is not on arena 2)arena is not started 3)game is already started
-        if(arena==null)return;
+       /* if(arena==null)return;
         if(!arena.isStarted)return;
         if(arena.isGameStarted)return;
         if(event.getItem()==null)return;
@@ -49,6 +59,6 @@ public class useListener implements Listener {
         player.getInventory().setArmorContents(team.armor);
         //send message to player
         player.sendMessage("You joined "+team.name+" team");
-        event.setCancelled(true);
+        event.setCancelled(true);*/
     }
 }
