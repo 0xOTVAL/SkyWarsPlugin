@@ -1,6 +1,7 @@
 package com.example.skywarsplugin.team;
 
 import com.example.skywarsplugin.SkyWars;
+import com.example.skywarsplugin.arena.Arena;
 import com.google.gson.Gson;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
@@ -22,6 +23,10 @@ public class TeamManager {
         teams.add(t);
     }
     public void fromFile(File file){
+        for(Arena a:plugin.arenaManager.arenas){
+            if(a.isGameStarted || !a.teams.isEmpty())return;
+        }
+        teams.clear();
         try {
             String jsonstring = FileUtils.readFileToString(file, Charset.defaultCharset());
             Gson g = new Gson();
@@ -29,9 +34,10 @@ public class TeamManager {
             for(TeamData td:teamList){
                 Team t=new Team(td);
                 for(String name: td.players){
-                    Player p=plugin.getServer().getPlayer(name);
+                    Player p=plugin.getServer().getPlayerExact(name);
+                    if(p==null)continue;
                     plugin.getServer().getConsoleSender().sendMessage(p.name());
-                    if(p!=null)t.addPlayer(p);
+                    t.addPlayer(p);
                 }
                 teams.add(t);
             }

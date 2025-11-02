@@ -3,10 +3,9 @@ package com.example.skywarsplugin.eventlisteners;
 import com.example.skywarsplugin.SkyWars;
 import com.example.skywarsplugin.arena.Arena;
 import com.example.skywarsplugin.arena.ArenaManager;
-import com.example.skywarsplugin.menu.AdminMenu;
-import com.example.skywarsplugin.team.Team;
+import com.example.skywarsplugin.menu.SWAdminMenu;
+import com.example.skywarsplugin.menu.SpectatorMenu;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,8 +26,14 @@ public class useListener implements Listener {
         Player player=event.getPlayer();
         Arena arena=arenaManager.getArenaByPlayer(player);
         String itemName= PlainTextComponentSerializer.plainText().serialize(event.getItem().getItemMeta().itemName());
-        if(event.getItem().getType()== Material.ENDER_EYE && itemName.equals("SkyWars admin menu")){
-            AdminMenu m=new AdminMenu(plugin);
+        if(itemName.equals("SkyWars admin menu")){
+            SWAdminMenu m=new SWAdminMenu(plugin);
+            event.getPlayer().openInventory(m.menuInventory);
+            event.setCancelled(true);
+            return;
+        }
+        if(itemName.equals("SW spectator menu")){
+            SpectatorMenu m=new SpectatorMenu(plugin);
             event.getPlayer().openInventory(m.menuInventory);
             event.setCancelled(true);
             return;

@@ -99,6 +99,29 @@ public class Arena {
         t.isUsed=false;
         Objects.requireNonNull(board.getTeam(t.name)).unregister();
     }
+    public void addSpec(Player p){
+        if(!spectators.contains(p))spectators.add(p);
+        p.setGameMode(GameMode.SPECTATOR);
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                p.teleportAsync(new Location(worldcopy,lobbypos.x,lobbypos.y,lobbypos.z));
+            }
+        });
+
+    }
+    public void delSpec(Player p){
+        if(spectators.contains(p)){
+            Bukkit.getScheduler().runTask(plugin, new Runnable() {
+                @Override
+                public void run() {
+                    p.teleportAsync(respawn_loc);
+                }
+            });
+            p.setGameMode(GameMode.SURVIVAL);
+            spectators.remove(p);
+        }
+    }
     public String addPlayer(Player player){
         //If arena is not started or game on arena has started or arena is full we cannot add player
         if(!isStarted)return "Arena "+name+" has not started";
@@ -229,11 +252,15 @@ public class Arena {
         String msg="Ты пидор";
         while(!players.isEmpty()){
             Player p=players.getFirst();
+            spectators.remove(p);
             p.showTitle(Title.title(Component.text(msg,TextColor.color(0,0,255)),Component.text("")));
             returnPlayer(p);
         }
         bar.removeAll();
-        if(!spectators.isEmpty())spectators.clear();
+        while(!spectators.isEmpty()){
+            Player p = spectators.getFirst();
+            delSpec(p);
+        }
         for(Team t:teams){
             t.isUsed=false;
         }
@@ -323,7 +350,12 @@ public class Arena {
         return "Arena "+name+" stopped";
     }
     public void killPlayer(Player player){
-        player.teleport(new Location(worldcopy,lobbypos.x,lobbypos.y,lobbypos.z));
+        Bukkit.getScheduler().runTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                player.teleportAsync(new Location(worldcopy,lobbypos.x,lobbypos.y,lobbypos.z));
+            }
+        });
         player.showTitle(Title.title(Component.text("You died", TextColor.color(255,0,0)),Component.text("")));
 
         player.setGameMode(GameMode.SPECTATOR);

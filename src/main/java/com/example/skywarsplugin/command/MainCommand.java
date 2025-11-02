@@ -31,5 +31,6 @@ public class MainCommand {
         base.addSubCommand(new SetPos2(plugin));
         base.addSubCommand(new SetGameTime(plugin));
         base.addSubCommand(new GiveAdminMenuItem(plugin));
+        base.addSubCommand(new GiveSpecMenuItem(plugin));
     }
 }
